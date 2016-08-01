@@ -2,7 +2,7 @@ var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
 var TodoApp = React.createClass({
-
+	mixins: [ DeepstreamReactMixin ],
 	getInitialState: function () {
 		return {
 			newTodoTitle: '',
@@ -22,15 +22,16 @@ var TodoApp = React.createClass({
 
 		event.preventDefault();
 
-		var todo = {
+		var id = 'todo/' + ds.getUid();
+
+		ds.record.getRecord( id ).set({
 			title: this.state.newTodoTitle.trim(),
-			id: Math.random(),
 			isDone: false
-		};
+		});
 
 		this.setState({
 			newTodoTitle: '',
-			todos: this.state.todos.concat([ todo ])
+			todos: this.state.todos.concat([ id ])
 		});
 	},
 
@@ -48,15 +49,15 @@ var TodoApp = React.createClass({
 	removeTodo: function( id ) {
 		this.setState({
 			todos: this.state.todos.filter(function( todo ){
-				return todo.id !== id;
+				return todo !== id;
 			})
 		});
 	},
 
 	render: function() {
 		var removeTodo = this.removeTodo;
-		var todos = this.state.todos.map(function( data ){
-			return <TodoItem key={data.id} data={data} removeTodo={removeTodo} />
+		var todos = this.state.todos.map(function( id ){
+			return <TodoItem key={id} dsRecord={id} removeTodo={removeTodo} />
 		});
 		return(
 			<div>
@@ -86,8 +87,3 @@ var TodoApp = React.createClass({
 		)
 	}
 });
-
-React.render(
-	<TodoApp />,
-	document.getElementsByClassName('todoapp')[0]
-);

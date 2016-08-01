@@ -1,8 +1,5 @@
 TodoItem = React.createClass({
-	getInitialState: function () {
-	    return this.props.data;
-	},
-
+	mixins: [ DeepstreamReactMixin ],
 	handleSubmit: function () {
 		var val = this.state.editText.trim();
 
@@ -29,7 +26,7 @@ TodoItem = React.createClass({
 				isEditing: false
 			});
 		} else if (event.keyCode === ENTER_KEY) {
-			this.onSubmit();
+			this.handleSubmit();
 		}
 	},
 
@@ -38,7 +35,8 @@ TodoItem = React.createClass({
 	},
 
 	destroy: function() {
-		this.props.removeTodo( this.state.id );
+		this.props.removeTodo( this.dsRecord.name );
+		this.dsRecord.delete();
 	},
 
 	toggleDone: function() {
