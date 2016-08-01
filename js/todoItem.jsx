@@ -1,11 +1,8 @@
-
-var ESCAPE_KEY = 27;
-var ENTER_KEY = 13;
-
 TodoItem = React.createClass({
 	getInitialState: function () {
 	    return this.props.data;
 	},
+
 	handleSubmit: function () {
 		var val = this.state.editText.trim();
 

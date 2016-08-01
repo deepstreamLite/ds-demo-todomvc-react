@@ -1,52 +1,48 @@
-var VIEWS = {
-	ALL: 'ALL',
-	ACTIVE: 'ACTIVE',
-	COMPLETED: 'COMPLETED'
-};
 var ENTER_KEY = 13;
+var ESCAPE_KEY = 27;
 
 var TodoApp = React.createClass({
-	//mixins: [DeepstreamMixin],
 
 	getInitialState: function () {
 		return {
-			showing: VIEWS.ALL,
-			newTodo: '',
+			newTodoTitle: '',
+			allChecked: false,
 			todos: []
 		}
 	},
 
 	handleChange: function (event) {
-		this.setState({newTodo: event.target.value});
+		this.setState({newTodoTitle: event.target.value});
 	},
 
 	handleNewTodoKeyDown: function (event) {
-		if (event.keyCode !== ENTER_KEY || !this.state.newTodo.trim() ) {
+		if (event.keyCode !== ENTER_KEY || !this.state.newTodoTitle.trim() ) {
 			return;
 		}
 
 		event.preventDefault();
 
-		// ds.record.getRecord( id ).set({
-		// 	title: this.state.local.text,
-		// 	isDone: false
-		// });
-
 		var todo = {
-			title: this.state.newTodo.trim(),
+			title: this.state.newTodoTitle.trim(),
 			id: Math.random(),
 			isDone: false
-		}
+		};
 
 		this.setState({
-			newTodo: '',
+			newTodoTitle: '',
 			todos: this.state.todos.concat([ todo ])
 		});
-
 	},
 
-	toggleAll: function() {
+	toggleAll: function( event ) {
+		this.state.todos.forEach(function( todo ){
+			todo.isDone = event.currentTarget.checked;
+		});
 
+		this.setState({
+			allChecked: event.currentTarget.checked,
+			todos: this.state.todos
+		});
 	},
 
 	removeTodo: function( id ) {
@@ -69,7 +65,7 @@ var TodoApp = React.createClass({
 					<input
 						className="new-todo"
 						placeholder="What needs to be done?"
-						value={this.state.newTodo}
+						value={this.state.newTodoTitle}
 						onKeyDown={this.handleNewTodoKeyDown}
 						onChange={this.handleChange}
 						autoFocus={true}
@@ -79,8 +75,8 @@ var TodoApp = React.createClass({
 					<input
 						className="toggle-all"
 						type="checkbox"
-						
 						onChange={this.toggleAll}
+						checked={this.state.allChecked}
 					/>
 					<ul className="todo-list">
 						{todos}
