@@ -1,5 +1,8 @@
 TodoItem = React.createClass({
-	mixins: [ DeepstreamReactMixin ],
+	getInitialState: function() {
+		return this.props.data;
+	},
+
 	handleSubmit: function () {
 		var val = this.state.editText.trim();
 
@@ -35,8 +38,7 @@ TodoItem = React.createClass({
 	},
 
 	destroy: function() {
-		this.props.removeTodo( this.dsRecord.name );
-		this.dsRecord.delete();
+		this.props.removeTodo( this.state.id );
 	},
 
 	toggleDone: function() {
